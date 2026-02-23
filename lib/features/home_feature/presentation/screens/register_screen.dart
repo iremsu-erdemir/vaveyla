@@ -1,26 +1,43 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sweet_shop_app_ui/core/theme/dimens.dart';
 import 'package:flutter_sweet_shop_app_ui/core/theme/theme.dart';
 import 'package:flutter_sweet_shop_app_ui/core/widgets/app_button.dart';
 import 'package:flutter_sweet_shop_app_ui/core/widgets/app_scaffold.dart';
 import 'package:flutter_sweet_shop_app_ui/core/widgets/shaded_container.dart';
-import 'package:flutter_sweet_shop_app_ui/features/home_feature/presentation/screens/register_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class SplashScreen extends StatefulWidget {
-  const SplashScreen({super.key});
+class RegisterScreen extends StatefulWidget {
+  const RegisterScreen({super.key});
 
   @override
-  State<SplashScreen> createState() => _SplashScreenState();
+  State<RegisterScreen> createState() => _RegisterScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> {
+class _RegisterScreenState extends State<RegisterScreen> {
   bool _obscurePassword = true;
+  bool _obscureConfirmPassword = true;
+  late final TapGestureRecognizer _loginTap;
+
+  @override
+  void initState() {
+    super.initState();
+    _loginTap =
+        TapGestureRecognizer()
+          ..onTap = () {
+            Navigator.of(context).maybePop();
+          };
+  }
+
+  @override
+  void dispose() {
+    _loginTap.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.appColors;
-    final typography = context.theme.appTypography;
     return AppScaffold(
       backgroundColor: colors.secondaryShade1,
       padding: EdgeInsets.zero,
@@ -32,7 +49,6 @@ class _SplashScreenState extends State<SplashScreen> {
           final isCompact = width < 360;
           final headerHeight = (height * 0.32).clamp(180.0, 280.0);
           final titleFontSize = (width * 0.085).clamp(26.0, 34.0);
-          final headerTopOffset = (height * 0.03).clamp(8.0, 24.0);
           final inputHeight = isCompact ? 46.0 : 52.0;
           final horizontalPadding =
               width < Dimens.smallDeviceBreakPoint
@@ -51,10 +67,8 @@ class _SplashScreenState extends State<SplashScreen> {
               Positioned.fill(child: Container(color: colors.secondaryShade1)),
 
               /// ÜST HEADER
-              Positioned(
-                top: headerTopOffset,
-                left: 0,
-                right: 0,
+              Align(
+                alignment: Alignment.topCenter,
                 child: SizedBox(
                   height: headerHeight,
                   width: width,
@@ -84,30 +98,33 @@ class _SplashScreenState extends State<SplashScreen> {
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            SizedBox(
-                              height: sectionSpacing,
-                            ),
+                            SizedBox(height: sectionSpacing),
                             Text(
-                              'VAVEYLA',
+                              'HESAP OLUSTUR',
                               textAlign: TextAlign.center,
                               style: GoogleFonts.lobsterTwo(
                                 color: colors.primary,
                                 fontWeight: FontWeight.w700,
-                                fontSize: titleFontSize + 4,
-                                letterSpacing: 1.0,
+                                fontSize: titleFontSize + 2,
+                                letterSpacing: 0.8,
                               ),
                             ),
-                            SizedBox(
-                              height: sectionSpacing,
-                            ),
-                            _LoginInputField(
-                              hintText: 'E-posta',
+                            SizedBox(height: sectionSpacing),
+                            _RegisterInputField(
+                              hintText: 'Ad Soyad',
                               icon: Icons.person,
+                              keyboardType: TextInputType.name,
+                              height: inputHeight,
+                            ),
+                            SizedBox(height: fieldSpacing),
+                            _RegisterInputField(
+                              hintText: 'E-posta',
+                              icon: Icons.email,
                               keyboardType: TextInputType.emailAddress,
                               height: inputHeight,
                             ),
                             SizedBox(height: fieldSpacing),
-                            _LoginInputField(
+                            _RegisterInputField(
                               hintText: 'Şifre',
                               icon: Icons.lock,
                               obscureText: _obscurePassword,
@@ -126,58 +143,63 @@ class _SplashScreenState extends State<SplashScreen> {
                                 ),
                               ),
                             ),
+                            SizedBox(height: fieldSpacing),
+                            _RegisterInputField(
+                              hintText: 'Şifre (Tekrar)',
+                              icon: Icons.lock,
+                              obscureText: _obscureConfirmPassword,
+                              height: inputHeight,
+                              suffixIcon: IconButton(
+                                onPressed: () {
+                                  setState(() {
+                                    _obscureConfirmPassword =
+                                        !_obscureConfirmPassword;
+                                  });
+                                },
+                                color: colors.gray4,
+                                icon: Icon(
+                                  _obscureConfirmPassword
+                                      ? Icons.visibility_off
+                                      : Icons.visibility,
+                                ),
+                              ),
+                            ),
                             SizedBox(
                               height: fieldSpacing + Dimens.extraLargePadding,
                             ),
                             AppButton(
-                              title: 'Giriş Yap',
+                              title: 'Hesap Oluştur',
                               onPressed: () {},
                               margin: EdgeInsets.zero,
                               borderRadius: 28,
-                              textStyle: typography.titleMedium.copyWith(
+                              textStyle: Theme.of(
+                                context,
+                              ).textTheme.titleMedium?.copyWith(
                                 color: colors.white,
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
                             SizedBox(height: Dimens.padding),
-                            TextButton(
-                              onPressed: () {},
-                              child: Text(
-                                'Şifrenizi mi unuttunuz?',
-                                style: typography.bodySmall.copyWith(
-                                  color: colors.gray4,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                            ),
-                            SizedBox(height: Dimens.smallPadding),
-                            Wrap(
-                              alignment: WrapAlignment.center,
-                              crossAxisAlignment: WrapCrossAlignment.center,
-                              children: [
-                                Text(
-                                  'Hesabınız yok mu? ',
-                                  style: typography.bodySmall.copyWith(
-                                    color: colors.gray4,
+                            RichText(
+                              text: TextSpan(
+                                style: Theme.of(context).textTheme.bodySmall
+                                    ?.copyWith(color: colors.gray4),
+                                children: [
+                                  const TextSpan(
+                                    text: 'Zaten hesabın var mı? ',
                                   ),
-                                ),
-                                GestureDetector(
-                                  onTap: () {
-                                    Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (_) => const RegisterScreen(),
-                                      ),
-                                    );
-                                  },
-                                  child: Text(
-                                    'Kayıt ol',
-                                    style: typography.bodySmall.copyWith(
+                                  TextSpan(
+                                    text: 'Giriş Yap',
+                                    style: Theme.of(
+                                      context,
+                                    ).textTheme.bodySmall?.copyWith(
                                       color: colors.primary,
                                       fontWeight: FontWeight.w600,
                                     ),
+                                    recognizer: _loginTap,
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           ],
                         ),
@@ -194,8 +216,8 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 }
 
-class _LoginInputField extends StatelessWidget {
-  const _LoginInputField({
+class _RegisterInputField extends StatelessWidget {
+  const _RegisterInputField({
     required this.hintText,
     required this.icon,
     this.obscureText = false,

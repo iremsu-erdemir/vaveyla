@@ -8,7 +8,7 @@ plugins {
 android {
     namespace = "com.sweet.shop.flutter_sweet_shop_app_ui"
     compileSdk = flutter.compileSdkVersion
-    ndkVersion = flutter.ndkVersion
+    ndkVersion = "27.0.12077973"
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11

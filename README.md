@@ -2,12 +2,7 @@
 
 Flutter ile geliştirilmiş eksiksiz bir Tatlı Dükkanı arayüzü. Flutter UI geliştirmeyi ve Figma’dan Flutter’a iş akışını öğrenmek için idealdir.
 
-## Demo görselleri
 
-![Demo](https://raw.githubusercontent.com/iremsu-erdemir/vaveyla/refs/heads/main/assets/demos/demo-1.png)
-![Demo](https://raw.githubusercontent.com/iremsu-erdemir/vaveyla/refs/heads/main/assets/demos/demo-2.png)
-![Demo](https://raw.githubusercontent.com/iremsu-erdemir/vaveyla/refs/heads/main/assets/demos/demo-3.png)
-![Demo](https://raw.githubusercontent.com/iremsu-erdemir/vaveyla/refs/heads/main/assets/demos/demo-4.png)
 
 ## Özellikler
 Özel tema sistemi (renkler, tipografi, ölçüler)
@@ -46,11 +41,6 @@ Etkileşimli arayüz öğeleri:
    flutter run
    ```
 
-## 📚 Kaynaklar  
-- [YouTube oynatma listesi](https://youtube.com/playlist?list=PLFecs-ae_8FG8O_y6zSL9muONH-iC5kYH&si=pwhuw0HfssxorQ9A)
-- [Figma Tasarımı](https://www.figma.com/design/kgbuMUCvaYoMXLRjDxkZ6s/Sweet-Craze?node-id=1-2&t=ynInnRvFPLgl3VuP-1)  
-- [Flutter Dokümantasyonu](https://flutter.dev)  
-- [Cubit Durum Yönetimi](https://bloclibrary.dev/)  
 
 ## 🤝 Katkı  
 Pull request’ler memnuniyetle karşılanır!

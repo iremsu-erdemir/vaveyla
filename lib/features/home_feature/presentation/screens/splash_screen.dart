@@ -4,6 +4,9 @@ import 'package:flutter_sweet_shop_app_ui/core/theme/theme.dart';
 import 'package:flutter_sweet_shop_app_ui/core/widgets/app_button.dart';
 import 'package:flutter_sweet_shop_app_ui/core/widgets/app_scaffold.dart';
 import 'package:flutter_sweet_shop_app_ui/core/widgets/shaded_container.dart';
+import 'package:flutter_sweet_shop_app_ui/core/services/auth_service.dart';
+import 'package:flutter_sweet_shop_app_ui/core/utils/app_navigator.dart';
+import 'package:flutter_sweet_shop_app_ui/features/home_feature/presentation/screens/home_screen.dart';
 import 'package:flutter_sweet_shop_app_ui/features/home_feature/presentation/screens/register_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -16,6 +19,109 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   bool _obscurePassword = true;
+  bool _isSubmitting = false;
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final AuthService _authService = AuthService();
+  final RegExp _hasUpperCase = RegExp(r'[A-Z]');
+  final RegExp _hasLowerCase = RegExp(r'[a-z]');
+  final RegExp _hasDigit = RegExp(r'[0-9]');
+  final RegExp _hasSpecial = RegExp(r"[!@#$%^&*(),.?{}|<>_\-+=;'\[\]\\\/`~]");
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  void _showMessage({required String message, required Color backgroundColor}) {
+    final colors = context.theme.appColors;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          message,
+          style: TextStyle(color: colors.white, fontWeight: FontWeight.w600),
+        ),
+        backgroundColor: backgroundColor,
+      ),
+    );
+  }
+
+  String? _validatePassword(String password) {
+    if (password.length < 6) {
+      return 'Şifre en az 6 karakter olmalıdır.';
+    }
+    if (!_hasUpperCase.hasMatch(password)) {
+      return 'Şifre en az bir büyük harf içermelidir.';
+    }
+    if (!_hasLowerCase.hasMatch(password)) {
+      return 'Şifre en az bir küçük harf içermelidir.';
+    }
+    if (!_hasDigit.hasMatch(password)) {
+      return 'Şifre en az bir rakam içermelidir.';
+    }
+    if (!_hasSpecial.hasMatch(password)) {
+      return 'Şifre en az bir özel karakter içermelidir.';
+    }
+    return null;
+  }
+
+  Future<void> _handleLogin() async {
+    if (_isSubmitting) {
+      return;
+    }
+    final email = _emailController.text.trim();
+    final password = _passwordController.text.trim();
+    final colors = context.theme.appColors;
+    if (email.isEmpty || password.isEmpty) {
+      _showMessage(
+        message: 'Lütfen e-posta ve şifre alanlarını doldurun.',
+        backgroundColor: colors.error,
+      );
+      return;
+    }
+    final passwordError = _validatePassword(password);
+    if (passwordError != null) {
+      _showMessage(message: passwordError, backgroundColor: colors.error);
+      return;
+    }
+
+    setState(() {
+      _isSubmitting = true;
+    });
+
+    try {
+      final result = await _authService.login(email: email, password: password);
+      if (!mounted) {
+        return;
+      }
+      _showMessage(
+        message: 'Giriş başarılı, yönlendiriliyorsunuz ${result.fullName}.',
+        backgroundColor: colors.success,
+      );
+      await Future.delayed(const Duration(seconds: 2));
+      if (!mounted) {
+        return;
+      }
+      await appPushReplacement(context, const HomeScreen());
+    } catch (error) {
+      if (!mounted) {
+        return;
+      }
+      final message =
+          error is AuthException
+              ? error.message
+              : 'Giriş başarısız. Lütfen tekrar deneyin.';
+      _showMessage(message: message, backgroundColor: colors.error);
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isSubmitting = false;
+        });
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -84,9 +190,7 @@ class _SplashScreenState extends State<SplashScreen> {
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            SizedBox(
-                              height: sectionSpacing,
-                            ),
+                            SizedBox(height: sectionSpacing),
                             Text(
                               'VAVEYLA',
                               textAlign: TextAlign.center,
@@ -97,14 +201,13 @@ class _SplashScreenState extends State<SplashScreen> {
                                 letterSpacing: 1.0,
                               ),
                             ),
-                            SizedBox(
-                              height: sectionSpacing,
-                            ),
+                            SizedBox(height: sectionSpacing),
                             _LoginInputField(
                               hintText: 'E-posta',
                               icon: Icons.person,
                               keyboardType: TextInputType.emailAddress,
                               height: inputHeight,
+                              controller: _emailController,
                             ),
                             SizedBox(height: fieldSpacing),
                             _LoginInputField(
@@ -112,6 +215,7 @@ class _SplashScreenState extends State<SplashScreen> {
                               icon: Icons.lock,
                               obscureText: _obscurePassword,
                               height: inputHeight,
+                              controller: _passwordController,
                               suffixIcon: IconButton(
                                 onPressed: () {
                                   setState(() {
@@ -131,7 +235,7 @@ class _SplashScreenState extends State<SplashScreen> {
                             ),
                             AppButton(
                               title: 'Giriş Yap',
-                              onPressed: () {},
+                              onPressed: _handleLogin,
                               margin: EdgeInsets.zero,
                               borderRadius: 28,
                               textStyle: typography.titleMedium.copyWith(
@@ -202,6 +306,7 @@ class _LoginInputField extends StatelessWidget {
     this.keyboardType,
     this.suffixIcon,
     this.height = 50,
+    this.controller,
   });
 
   final String hintText;
@@ -210,6 +315,7 @@ class _LoginInputField extends StatelessWidget {
   final TextInputType? keyboardType;
   final Widget? suffixIcon;
   final double height;
+  final TextEditingController? controller;
 
   @override
   Widget build(BuildContext context) {
@@ -221,6 +327,7 @@ class _LoginInputField extends StatelessWidget {
       child: TextField(
         obscureText: obscureText,
         keyboardType: keyboardType,
+        controller: controller,
         decoration: InputDecoration(
           border: InputBorder.none,
           hintText: hintText,

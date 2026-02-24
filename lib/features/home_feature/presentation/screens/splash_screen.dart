@@ -23,6 +23,7 @@ class _SplashScreenState extends State<SplashScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final AuthService _authService = AuthService();
+  final ScrollController _scrollController = ScrollController();
   final RegExp _hasUpperCase = RegExp(r'[A-Z]');
   final RegExp _hasLowerCase = RegExp(r'[a-z]');
   final RegExp _hasDigit = RegExp(r'[0-9]');
@@ -32,6 +33,7 @@ class _SplashScreenState extends State<SplashScreen> {
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -177,8 +179,11 @@ class _SplashScreenState extends State<SplashScreen> {
                 top: false,
                 child: Center(
                   child: Scrollbar(
+                    controller: _scrollController,
                     thumbVisibility: true,
                     child: SingleChildScrollView(
+                      controller: _scrollController,
+                      primary: false,
                       padding: EdgeInsets.fromLTRB(
                         horizontalPadding,
                         contentTopPadding,

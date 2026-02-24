@@ -112,11 +112,23 @@ class AuthService {
       urls.add('http://localhost:5000');
       return urls;
     }
-    urls.addAll([
-      'http://10.0.2.2:5000',
-      'http://192.168.45.149:5000',
-    ]);
-    return urls;
+
+    switch (defaultTargetPlatform) {
+      case TargetPlatform.android:
+        urls.addAll(['http://10.0.2.2:5000', 'http://192.168.45.149:5000']);
+        return urls;
+      case TargetPlatform.iOS:
+        urls.addAll(['http://127.0.0.1:5000', 'http://192.168.45.149:5000']);
+        return urls;
+      case TargetPlatform.windows:
+      case TargetPlatform.linux:
+      case TargetPlatform.macOS:
+        urls.addAll(['http://localhost:5000', 'http://127.0.0.1:5000']);
+        return urls;
+      case TargetPlatform.fuchsia:
+        urls.addAll(['http://localhost:5000', 'http://127.0.0.1:5000']);
+        return urls;
+    }
   }
 }
 

@@ -3752,7 +3752,7 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\erdem\\AppData\\Local\\Temp\\cursor-sandbox-cache\\762a731d83df76b2fe9e2a84408eba93\\nuget": {}
+    "C:\\Users\\erdem\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
@@ -3760,7 +3760,7 @@
       "projectUniqueName": "C:\\Users\\erdem\\Desktop\\Vaveyla\\backend\\Vaveyla.Api\\Vaveyla.Api.csproj",
       "projectName": "Vaveyla.Api",
       "projectPath": "C:\\Users\\erdem\\Desktop\\Vaveyla\\backend\\Vaveyla.Api\\Vaveyla.Api.csproj",
-      "packagesPath": "C:\\Users\\erdem\\AppData\\Local\\Temp\\cursor-sandbox-cache\\762a731d83df76b2fe9e2a84408eba93\\nuget",
+      "packagesPath": "C:\\Users\\erdem\\.nuget\\packages\\",
       "outputPath": "C:\\Users\\erdem\\Desktop\\Vaveyla\\backend\\Vaveyla.Api\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [

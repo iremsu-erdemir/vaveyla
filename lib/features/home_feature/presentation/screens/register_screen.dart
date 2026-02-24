@@ -22,6 +22,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   bool _obscureConfirmPassword = true;
   bool _isSubmitting = false;
   late final TapGestureRecognizer _loginTap;
+  final ScrollController _scrollController = ScrollController();
   final List<String> _roles = const ['Restoran Sahibi', 'Müşteri', 'Kurye'];
   late String _selectedRole;
   final _fullNameController = TextEditingController();
@@ -52,6 +53,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     _emailController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -220,8 +222,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 top: false,
                 child: Center(
                   child: Scrollbar(
+                    controller: _scrollController,
                     thumbVisibility: true,
                     child: SingleChildScrollView(
+                      controller: _scrollController,
+                      primary: false,
                       padding: EdgeInsets.fromLTRB(
                         horizontalPadding,
                         contentTopPadding,

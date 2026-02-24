@@ -12,8 +12,8 @@ using Vaveyla.Api.Data;
 namespace Vaveyla.Api.Migrations
 {
     [DbContext(typeof(VaveylaDbContext))]
-    [Migration("20260223211804_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20260224101434_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
